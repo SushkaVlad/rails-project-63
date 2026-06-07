@@ -3,37 +3,80 @@
 [![hexlet-check](https://github.com/SushkaVlad/rails-project-63/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/SushkaVlad/rails-project-63/actions/workflows/hexlet-check.yml)
 [![CI](https://github.com/SushkaVlad/rails-project-63/actions/workflows/main.yml/badge.svg)](https://github.com/SushkaVlad/rails-project-63/actions/workflows/main.yml)
 
-A simple HTML form generator for Ruby applications.
+A simple HTML form generator for Ruby applications. The gem builds HTML tags and
+(eventually) full forms from plain Ruby objects.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add the gem to your application's Gemfile from this repository:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem "hexlet_code", git: "https://github.com/SushkaVlad/rails-project-63.git"
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+And then install dependencies:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+bundle install
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Building tags
+
+`HexletCode::Tag.build` generates HTML for both single and paired tags.
+
+```ruby
+require "hexlet_code"
+
+# Single tags
+HexletCode::Tag.build("br")
+# => "<br>"
+
+HexletCode::Tag.build("img", src: "path/to/image")
+# => '<img src="path/to/image">'
+
+HexletCode::Tag.build("input", type: "submit", value: "Save")
+# => '<input type="submit" value="Save">'
+
+# Paired tags — the body is passed as a block
+HexletCode::Tag.build("label") { "Email" }
+# => "<label>Email</label>"
+
+HexletCode::Tag.build("label", for: "email") { "Email" }
+# => '<label for="email">Email</label>'
+
+HexletCode::Tag.build("div")
+# => "<div></div>"
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, install dependencies:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```bash
+make install
+```
+
+Run the test suite:
+
+```bash
+make test
+```
+
+Run the linter (and auto-fix where possible):
+
+```bash
+make lint
+make lint-fix
+```
+
+You can also run `bin/console` for an interactive prompt to experiment.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/hexlet_code.
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/SushkaVlad/rails-project-63.
 
 ## License
 
