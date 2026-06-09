@@ -27,12 +27,13 @@ RSpec.describe HexletCode do
     end
 
     context "with fields" do
-      it "builds a text input from the entity value" do
+      it "builds a labeled text input from the entity value" do
         result = described_class.form_for(user) do |f|
           f.input :name
         end
         expect(result).to eq(
           '<form action="#" method="post">' \
+          '<label for="name">Name</label>' \
           '<input name="name" type="text" value="rob">' \
           "</form>"
         )
@@ -44,17 +45,19 @@ RSpec.describe HexletCode do
         end
         expect(result).to eq(
           '<form action="#" method="post">' \
+          '<label for="name">Name</label>' \
           '<input name="name" type="text" value="rob" class="user-input">' \
           "</form>"
         )
       end
 
-      it "builds a textarea for as: :text with default cols and rows" do
+      it "builds a labeled textarea for as: :text with default cols and rows" do
         result = described_class.form_for(user) do |f|
           f.input :job, as: :text
         end
         expect(result).to eq(
           '<form action="#" method="post">' \
+          '<label for="job">Job</label>' \
           '<textarea name="job" cols="20" rows="40">hexlet</textarea>' \
           "</form>"
         )
@@ -66,6 +69,7 @@ RSpec.describe HexletCode do
         end
         expect(result).to eq(
           '<form action="#" method="post">' \
+          '<label for="job">Job</label>' \
           '<textarea name="job" cols="50" rows="50">hexlet</textarea>' \
           "</form>"
         )
@@ -78,7 +82,9 @@ RSpec.describe HexletCode do
         end
         expect(result).to eq(
           '<form action="#" method="post">' \
+          '<label for="name">Name</label>' \
           '<input name="name" type="text" value="rob">' \
+          '<label for="job">Job</label>' \
           '<textarea name="job" cols="20" rows="40">hexlet</textarea>' \
           "</form>"
         )
@@ -90,6 +96,45 @@ RSpec.describe HexletCode do
             f.input :age
           end
         end.to raise_error(NoMethodError)
+      end
+    end
+
+    context "with a submit button" do
+      it "adds a default submit button labeled Save" do
+        result = described_class.form_for(user, &:submit)
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<input type="submit" value="Save">' \
+          "</form>"
+        )
+      end
+
+      it "uses a custom submit button text" do
+        result = described_class.form_for(user) do |f|
+          f.submit "Wow"
+        end
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<input type="submit" value="Wow">' \
+          "</form>"
+        )
+      end
+
+      it "builds a full form with labeled inputs and a submit button" do
+        result = described_class.form_for(user) do |f|
+          f.input :name
+          f.input :job
+          f.submit
+        end
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<label for="name">Name</label>' \
+          '<input name="name" type="text" value="rob">' \
+          '<label for="job">Job</label>' \
+          '<input name="job" type="text" value="hexlet">' \
+          '<input type="submit" value="Save">' \
+          "</form>"
+        )
       end
     end
   end

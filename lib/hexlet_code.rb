@@ -15,6 +15,7 @@ module HexletCode
     block&.call(form_builder)
     action = attributes.delete(:url) || "#"
     form_attributes = { action: action, method: "post", **attributes }
-    Tag.build("form", **form_attributes) { form_builder.fields.join }
+    renderer = Renderers::Html.new
+    Tag.build("form", **form_attributes) { form_builder.fields.map { |field| renderer.render(field) }.join }
   end
 end

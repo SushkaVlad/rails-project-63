@@ -11,15 +11,13 @@ module HexletCode
     end
 
     def input(user_field, **options)
-      as = options.delete(:as)
+      as = options.delete(:as) || :input
       value = @user.public_send(user_field).to_s
-      if as == :text
-        attributes = { name: user_field, cols: 20, rows: 40, **options }
-        @fields << Tag.build("textarea", **attributes) { value }
-      else
-        attributes = { name: user_field, type: "text", value: value, **options }
-        @fields << Tag.build("input", **attributes)
-      end
+      @fields << Field.new(as, user_field, value, options)
+    end
+
+    def submit(value = "Save")
+      @fields << Field.new(:submit, nil, value, options: {})
     end
   end
 end
