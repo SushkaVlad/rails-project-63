@@ -94,6 +94,9 @@ end
 # </form>
 ```
 
+Each input is rendered together with a `<label>`, and `f.submit` adds a submit
+button (its text defaults to `Save` and can be overridden, e.g. `f.submit "Wow"`).
+
 Requesting a field that the entity does not have raises `NoMethodError`.
 
 ## Development
