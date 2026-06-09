@@ -6,22 +6,91 @@ RSpec.describe HexletCode do
   end
 
   describe ".form_for" do
-    let(:user_struct) { Struct.new(:name, :job, keyword_init: true) }
-    let(:user) { user_struct.new(name: "rob") }
+    let(:user_struct) { Struct.new(:name, :job, :gender, keyword_init: true) }
+    let(:user) { user_struct.new(name: "rob", job: "hexlet", gender: "m") }
 
-    it "builds a form with default action and method" do
-      result = described_class.form_for(user) {}
-      expect(result).to eq('<form action="#" method="post"></form>')
+    context "with an empty block" do
+      it "builds a form with default action and method" do
+        result = described_class.form_for(user) {}
+        expect(result).to eq('<form action="#" method="post"></form>')
+      end
+
+      it "passes extra attributes to the form tag" do
+        result = described_class.form_for(user, class: "hexlet-form") {}
+        expect(result).to eq('<form action="#" method="post" class="hexlet-form"></form>')
+      end
+
+      it "uses the url option as the form action" do
+        result = described_class.form_for(user, url: "/profile", class: "hexlet-form") {}
+        expect(result).to eq('<form action="/profile" method="post" class="hexlet-form"></form>')
+      end
     end
 
-    it "passes extra attributes to the form tag" do
-      result = described_class.form_for(user, class: "hexlet-form") {}
-      expect(result).to eq('<form action="#" method="post" class="hexlet-form"></form>')
-    end
+    context "with fields" do
+      it "builds a text input from the entity value" do
+        result = described_class.form_for(user) do |f|
+          f.input :name
+        end
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<input name="name" type="text" value="rob">' \
+          "</form>"
+        )
+      end
 
-    it "uses the url option as the form action" do
-      result = described_class.form_for(user, url: "/profile", class: "hexlet-form") {}
-      expect(result).to eq('<form action="/profile" method="post" class="hexlet-form"></form>')
+      it "passes extra attributes to an input" do
+        result = described_class.form_for(user) do |f|
+          f.input :name, class: "user-input"
+        end
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<input name="name" type="text" value="rob" class="user-input">' \
+          "</form>"
+        )
+      end
+
+      it "builds a textarea for as: :text with default cols and rows" do
+        result = described_class.form_for(user) do |f|
+          f.input :job, as: :text
+        end
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<textarea name="job" cols="20" rows="40">hexlet</textarea>' \
+          "</form>"
+        )
+      end
+
+      it "overrides default cols and rows for a textarea" do
+        result = described_class.form_for(user) do |f|
+          f.input :job, as: :text, rows: 50, cols: 50
+        end
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<textarea name="job" cols="50" rows="50">hexlet</textarea>' \
+          "</form>"
+        )
+      end
+
+      it "builds multiple fields in order" do
+        result = described_class.form_for(user) do |f|
+          f.input :name
+          f.input :job, as: :text
+        end
+        expect(result).to eq(
+          '<form action="#" method="post">' \
+          '<input name="name" type="text" value="rob">' \
+          '<textarea name="job" cols="20" rows="40">hexlet</textarea>' \
+          "</form>"
+        )
+      end
+
+      it "raises NoMethodError for a field missing on the entity" do
+        expect do
+          described_class.form_for(user) do |f|
+            f.input :age
+          end
+        end.to raise_error(NoMethodError)
+      end
     end
   end
 end

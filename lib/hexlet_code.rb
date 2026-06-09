@@ -10,9 +10,11 @@ require_relative "hexlet_code/version"
 module HexletCode
   class Error < StandardError; end
 
-  def self.form_for(model, **attributes, &block)
+  def self.form_for(user, **attributes, &block)
+    form_builder = FormBuilder.new(user)
+    block&.call(form_builder)
     action = attributes.delete(:url) || "#"
     form_attributes = { action: action, method: "post", **attributes }
-    Tag.build("form", **form_attributes) { block.call(model) }
+    Tag.build("form", **form_attributes) { form_builder.fields.join }
   end
 end
