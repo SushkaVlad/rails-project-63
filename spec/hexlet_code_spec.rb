@@ -4,6 +4,26 @@ RSpec.describe HexletCode do
   it "has a version number" do
     expect(HexletCode::VERSION).not_to be nil
   end
+
+  describe ".form_for" do
+    let(:user_struct) { Struct.new(:name, :job, keyword_init: true) }
+    let(:user) { user_struct.new(name: "rob") }
+
+    it "builds a form with default action and method" do
+      result = described_class.form_for(user) {}
+      expect(result).to eq('<form action="#" method="post"></form>')
+    end
+
+    it "passes extra attributes to the form tag" do
+      result = described_class.form_for(user, class: "hexlet-form") {}
+      expect(result).to eq('<form action="#" method="post" class="hexlet-form"></form>')
+    end
+
+    it "uses the url option as the form action" do
+      result = described_class.form_for(user, url: "/profile", class: "hexlet-form") {}
+      expect(result).to eq('<form action="/profile" method="post" class="hexlet-form"></form>')
+    end
+  end
 end
 
 RSpec.describe HexletCode::Tag do
